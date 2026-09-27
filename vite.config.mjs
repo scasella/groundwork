@@ -18,5 +18,6 @@ export default defineConfig({
       clientFiles: ["./src/main.jsx"],
     },
   },
+  test: { include: ["tests/*.test.jsx"] },
   plugins: [react()],
 });

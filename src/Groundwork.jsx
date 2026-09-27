@@ -1,5 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {App} from './App.jsx';
+import {Studio} from './studio/Studio.jsx';
+import {STUDIO_KEY} from './studio/session.js';
 import {Lessons} from './Lessons.jsx';
 import {AccountControls} from './AccountControls.jsx';
 import {accountStorageKey,readAccount} from './account.js';
@@ -19,6 +21,8 @@ export function Groundwork(){
   const controls=<AccountControls account={account}/>;
   const workspace=new URLSearchParams(window.location.search).get('example')==='audio'
     ? <App key={accountStorageKey(SESSION_KEY,account.user)} storageKey={accountStorageKey(SESSION_KEY,account.user)} accountControls={controls} onBeginner={()=>window.location.assign(window.location.pathname)}/>
+    : new URLSearchParams(window.location.search).has('studio')
+    ? <Studio key={accountStorageKey(STUDIO_KEY,account.user)} storageKey={accountStorageKey(STUDIO_KEY,account.user)} accountControls={controls}/>
     : <Lessons key={accountStorageKey(LESSON_KEY,account.user)} storageKey={accountStorageKey(LESSON_KEY,account.user)} accountControls={controls}/>;
   return <>{(checking||error)&&waiting}<div className="account-workspace" hidden={checking||!!error}>{workspace}</div></>;
 }

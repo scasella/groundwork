@@ -8,13 +8,13 @@ Only exact bundled prepared source templates may be instantiated. The loader che
 
 The JavaScript runtime, generator, independent expected tables/rules, and checker are trusted. A result's hash is an integrity/identity aid, not a digital signature. An owner who edits their own browser storage can rewrite local history; defending against that owner is not a claimed boundary.
 
-Storage is shape-validated before rendering and malformed originals are preserved for recovery. Current exact-template restrictions can reject older artifacts after an incompatible template update. Export before upgrading or clearing browser data; session import is not available.
+Storage is shape-validated before rendering and malformed originals are preserved for recovery. Current exact-template restrictions can reject older artifacts after an incompatible template update. Export before upgrading or clearing browser data; full session import is not available. Starter editable-project JSON imports only bounded settings, never source, check results, or decisions.
 
 ## Privacy
 
-There is no lesson-data backend, analytics, or application telemetry. An optional `/api/session` endpoint reads identity supplied by the Sites dispatcher; it is disabled unless `GROUNDWORK_CHATGPT_AUTH=enabled`. The browser calls it before choosing a local workspace. Sites owns the ChatGPT sign-in/sign-out routes and cookies; Groundwork does not implement passwords, OAuth callbacks, or store authentication tokens. Enable this integration only behind Sites, never behind a proxy that accepts spoofed identity headers. Account responses are private and non-cacheable.
+There is no project-data backend, analytics, or application telemetry. An optional `/api/session` endpoint reads identity supplied by the Sites dispatcher; it is disabled unless `GROUNDWORK_CHATGPT_AUTH=enabled`. The browser calls it before choosing a local workspace. Sites owns the ChatGPT sign-in/sign-out routes and cookies; Groundwork does not implement passwords, OAuth callbacks, or store authentication tokens. Enable this integration only behind Sites, never behind a proxy that accepts spoofed identity headers. Account responses are private and non-cacheable.
 
-The app serves locally bundled assets and stores progress in localStorage, partitioned by the Site-scoped account identifier when signed in. This prevents accidental mixing in the UI; it is not encrypted or server-backed account isolation. Signing out returns to guest progress. No cross-device synchronization is provided. Exports can include notes entered in the advanced example and full history: inspect them before sharing. Clear or restart the relevant example on shared machines when appropriate.
+The app serves locally bundled assets and stores progress in localStorage, partitioned by the Site-scoped account identifier when signed in. This prevents accidental mixing in the UI; it is not encrypted or server-backed account isolation. Signing out returns to guest progress. No cross-device synchronization is provided. Exports can include your project titles and story text, notes entered in the advanced example, and full history: inspect them before sharing. Clear or restart the relevant example on shared machines when appropriate.
 
 ## Deployment and reports
 
