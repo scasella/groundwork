@@ -11,13 +11,13 @@ const session=()=>JSON.parse(localStorage.getItem(SESSION_KEY));
 test('new user repairs code, changes intent, accepts, refreshes, and detects code regression',async()=>{
  render(<App/>);click('Start guided project');click('Approve interpretation & check');
  await screen.findByText('Bounded check failed',{}, {timeout:5000});
- expect(session().evidence[0].violations[0].operations).toHaveLength(4);
+ await waitFor(()=>{expect(session().evidence).toHaveLength(1);expect(session().evidence[0].violations[0].operations).toHaveLength(4);});
  click('Apply tutorial repair & recheck');await screen.findByText('Bounded check passed',{}, {timeout:5000});
  for(const name of ['Add A','Add B','Add A','Add B'])click(name);
  expect(session().sample.queue).toEqual(['B','A','B']);
  click(/Compare a different policy/);expect(screen.getByText('Different intent. Different correct behavior.')).toBeTruthy();
  click('Approve change & check');await screen.findByText('Bounded check passed',{}, {timeout:5000});
- expect(session().spec.config.policy).toBe('drop-newest');expect(session().evidence).toHaveLength(3);
+ await waitFor(()=>{expect(session().spec.config.policy).toBe('drop-newest');expect(session().evidence).toHaveLength(3);});
  expect(screen.getByRole('button',{name:'Accept this revision'}).disabled).toBe(true);
  fireEvent.click(screen.getByRole('checkbox',{name:'Acknowledge verification limits'}));click('Accept this revision');
  expect(session().acceptances).toHaveLength(1);cleanup();render(<App/>);expect(screen.getByText('Accepted, with limits.')).toBeTruthy();
