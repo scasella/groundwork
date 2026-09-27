@@ -21,7 +21,7 @@ macOS Apple Silicon; Node 24.21.0; existing locked dependencies, no dependency u
 
 Engine tests use actual source execution and an independent interpreter. They cover reference/mirror/order semantics, all local contexts, malformed inputs, authored rising water, duplication/repair, alchemy/promise revision, fixed stone, field/seam composition, source identity and minification, cancellation, budgets, immutable evidence and corruption. Export tests compare module behavior and bytes, exercise standalone controls, and test safe text encoding. UI tests cover adoption, imports, late results, real checker outcomes, modal focus, persistence, account isolation, scene replacement and stable direction painting. WorldCanvas callbacks are mocked in the UI suite; real browser checks below cover the actual renderer.
 
-The first CI attempt hit Vitest's five-second per-test limit in the alchemy journey on Node 22 and 26; Node 24 passed. That one journey now has a 15-second cap, retaining both real exhaustive checks and every assertion. Other test timeouts and checking budgets are unchanged.
+The first CI attempt hit Vitest's five-second limit in the alchemy journey on Node 22 and 26. A subsequent Node 26 run exposed a test race: the helper observed the stopped button before the new evidence had been persisted. It now waits for the additional saved report and cleared run state. The two longer check/adoption journeys have 15-second caps; all real checks and assertions are retained. Runtime checking budgets are unchanged.
 
 ## Browser-operated journeys
 
