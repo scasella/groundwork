@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.env
+.env.*
+*.log
+.DS_Store
+.playwright-mcp/
+.checkpoints/
+.sites-runtime/
+.release-candidate.json
