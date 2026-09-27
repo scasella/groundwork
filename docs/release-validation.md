@@ -16,7 +16,7 @@ On macOS Apple Silicon with Node 24.21.0, including a fresh `npm ci` and the ful
 
 The audit originally reported five vulnerable packages. Vite was patched from 6.4.2 to 6.4.3 and compatible transitive fixes were applied. See the [Vite advisory](https://github.com/advisories/GHSA-v6wh-96g9-6wx3). Audit results are time-dependent and do not prove absence of vulnerabilities.
 
-The candidate content scan passed for 37 staged/tracked files; its allowlisted copy removes local-only histories, machine paths, and hosting identity.
+The candidate content scan passed for 38 staged/tracked files; its allowlisted copy removes local-only histories, machine paths, and hosting identity.
 
 The pinned CI workflow targets Node 22.22.2, 24.21.0, and 26.8.1 on GitHub-hosted Linux. That is intended CI coverage, not a claim that GitHub Actions has already run. Local verification does not establish Windows, Linux, every browser, or every engine-version combination.
 
@@ -40,4 +40,4 @@ These reviews are bounded adversarial checks. They do not establish human compre
 
 The application trusts JavaScript, its prepared templates, the reference data/rules, and the checker. Browser-local history is editable. Exact-template restrictions may require recovery/export after incompatible future template changes. The public candidate excludes private review records, local exported sessions, absolute machine paths, and the original hosting project identifier.
 
-License selection and actual repository publication are separate maintainer decisions. This candidate was prepared locally; no public GitHub repository, remote CI result, or deployed service is asserted by this document.
+The maintainer approved publication under the MIT license. The local evidence above does not itself establish remote CI success; consult the repository’s Actions page for current runs. Publishing this source does not deploy a hosted application.

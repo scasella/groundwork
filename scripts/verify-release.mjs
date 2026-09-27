@@ -16,6 +16,6 @@ for(const file of files){
  if(/\.(png|jpe?g|webp)$/i.test(file))continue;
  const content=fs.readFileSync(target,'utf8');if(patterns.some(pattern=>pattern.test(content)))problems.push(`${file}: private path, deployment identifier, or credential-like text`);
 }
-for(const file of ['README.md','package-lock.json','.nvmrc','.github/workflows/ci.yml','SECURITY.md','CONTRIBUTING.md','THIRD_PARTY_NOTICES.md'])if(!files.includes(file))problems.push(`${file}: missing`);
+for(const file of ['LICENSE','README.md','package-lock.json','.nvmrc','.github/workflows/ci.yml','SECURITY.md','CONTRIBUTING.md','THIRD_PARTY_NOTICES.md'])if(!files.includes(file))problems.push(`${file}: missing`);
 if(problems.length)throw Error(problems.join('\n'));
 console.log(`Release content check passed for ${files.length} staged/tracked files. This is a bounded scan, not a secret-detection guarantee.`);

@@ -65,4 +65,4 @@ The build emits `dist/client/` for static hosting and a small Worker package in 
 
 ## Status and license
 
-Candidate version: **0.1.0-rc.1**. License selection is pending; this candidate does not yet grant an open-source license. Do not describe the project as open source until a license is selected and included.
+Early preview: **0.1.0-rc.1**, available under the [MIT License](LICENSE). Third-party packages retain their own licenses; see [notices](THIRD_PARTY_NOTICES.md).
