@@ -11,9 +11,10 @@ test('Sites identity requires explicit runtime enablement and both trusted heade
  assert.equal(accountResponse(new Request('https://site.example/api/session',{method:'POST'}),{}).status,405);assert.equal(accountResponse(new Request('https://site.example/'),{}),null);
 });
 test('auth navigation remains relative, account keys are isolated, and failures do not select a workspace',async()=>{
- for(const unsafe of ['https://evil.example','//evil.example','/\\evil.example'])assert.equal(accountPath('in',unsafe),'/signin-with-chatgpt?return_to=%2F');
+ for(const unsafe of ['https://evil.example','//evil.example','/\\evil.example','/signin-with-chatgpt','/signout-with-chatgpt','/callback'])assert.equal(accountPath('in',unsafe),'/signin-with-chatgpt?return_to=%2F');
  assert.equal(accountPath('out','/?example=audio'),'/signout-with-chatgpt?return_to=%2F%3Fexample%3Daudio');
  assert.equal(accountStorageKey('base',null),'base');assert.notEqual(accountStorageKey('base',{id:'a'}),accountStorageKey('base',{id:'b'}));
  assert.deepEqual(await readAccount(async()=>new Response('<html>Local dev</html>',{headers:{'content-type':'text/html'}})),{available:false,user:null});
+ await assert.rejects(()=>readAccount(async()=>new Response('<html>Unexpected redirect</html>',{headers:{'content-type':'text/html'}}),undefined,{required:true}));
  await assert.rejects(()=>readAccount(async()=>Response.json({available:true,user:{id:''}})));await assert.rejects(()=>readAccount(async()=>new Response('error',{status:500})));
 });

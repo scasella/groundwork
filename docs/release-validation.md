@@ -9,7 +9,7 @@ On macOS Apple Silicon with Node 24.21.0, including a fresh `npm ci` and the ful
 | Gate | Observed result |
 | --- | --- |
 | `npm test` | 26 integrity tests passed |
-| `npm run test:ui` | 14 interaction tests passed |
+| `npm run test:ui` | 15 interaction tests passed |
 | `npm run build` | Passed |
 | `npm run test:sites` | 4 tests passed, including required build artifacts |
 | `npm audit` after compatible fixes | 0 reported vulnerabilities at the time checked |
