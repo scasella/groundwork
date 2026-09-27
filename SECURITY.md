@@ -8,7 +8,7 @@ Only exact bundled prepared source templates may be instantiated. The loader che
 
 The JavaScript runtime, generator, independent expected tables/rules, and checker are trusted. A result's hash is an integrity/identity aid, not a digital signature. An owner who edits their own browser storage can rewrite local history; defending against that owner is not a claimed boundary.
 
-Storage is shape-validated before rendering and malformed originals are preserved for recovery. Current exact-template restrictions can reject older artifacts after an incompatible template update. Export before upgrading or clearing browser data; full session import is not available. Starter editable-project JSON imports only bounded settings, never source, check results, or decisions.
+Storage is shape-validated before rendering and malformed originals are preserved for recovery. Current exact-template restrictions can reject older artifacts after an incompatible template update. Export before upgrading or clearing browser data; full full session import is not available. Universe and archived-starter editable-project JSON imports only bounded settings and scene data, never source, check results, or decisions. Universe imports explicitly review any changed promises before applying them.
 
 ## Privacy
 

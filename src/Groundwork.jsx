@@ -1,5 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {App} from './App.jsx';
+import {Universe} from './universe/Universe.jsx';
+import {UNIVERSE_KEY} from './universe/session.js';
 import {Studio} from './studio/Studio.jsx';
 import {STUDIO_KEY} from './studio/session.js';
 import {Lessons} from './Lessons.jsx';
@@ -21,8 +23,10 @@ export function Groundwork(){
   const controls=<AccountControls account={account}/>;
   const workspace=new URLSearchParams(window.location.search).get('example')==='audio'
     ? <App key={accountStorageKey(SESSION_KEY,account.user)} storageKey={accountStorageKey(SESSION_KEY,account.user)} accountControls={controls} onBeginner={()=>window.location.assign(window.location.pathname)}/>
+    : new URLSearchParams(window.location.search).get('archive')==='starters'
+    ? <><div className="archived-work-notice">Archived starter projects · your earlier work is preserved. <a href="?studio=1">Open the universe workshop</a></div><Studio key={accountStorageKey(STUDIO_KEY,account.user)} storageKey={accountStorageKey(STUDIO_KEY,account.user)} accountControls={controls}/></>
     : new URLSearchParams(window.location.search).has('studio')
-    ? <Studio key={accountStorageKey(STUDIO_KEY,account.user)} storageKey={accountStorageKey(STUDIO_KEY,account.user)} accountControls={controls}/>
+    ? <Universe key={accountStorageKey(UNIVERSE_KEY,account.user)} storageKey={accountStorageKey(UNIVERSE_KEY,account.user)} accountControls={controls}/>
     : <Lessons key={accountStorageKey(LESSON_KEY,account.user)} storageKey={accountStorageKey(LESSON_KEY,account.user)} accountControls={controls}/>;
   return <>{(checking||error)&&waiting}<div className="account-workspace" hidden={checking||!!error}>{workspace}</div></>;
 }

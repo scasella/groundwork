@@ -2,6 +2,24 @@
 
 Groundwork separates four things: an approved rule, a stored executable artifact, a computed evidence record, and an optional human decision.
 
+## Universe workshop (current creation experience)
+
+The normal `?studio=1` entry opens a 64×64 discrete world. Four cell values represent empty space, sand, water, and stone. Every whole tick applies two disjoint 2×2 partitions, at even and odd offsets, with wrapping boundaries. The wrapped top-left block coordinate selects its direction from an 8×8 field map.
+
+People author up to eight ordered local rules. A before-cell matches a literal material or any material. An after-cell reads one of the four original cells or writes a literal material. The first enabled direct match wins; optional horizontal reflection is tried before moving to the next rule. Direction filters use world coordinates. Matching/output pictures use the frame oriented with the field pointing down, and outputs rotate back. Unmatched encounters use the prepared falling/spreading behavior. These operations permit copying, destruction, transformation, and motion; validity is not guaranteed by the editor.
+
+The canonical artifact contains both `rule(block, context)` and `step(world)` as standalone JavaScript source. Literal templates and normalized JSON keep its bytes stable across minification. Source identity and exact template-family membership are checked before evaluation. The browser and checker execute that stored source; exports embed its exact module bytes. This is a restricted source loader, not a universal JavaScript verifier. User text is encoded safely before entering module source or HTML.
+
+An independent interpreter supplies expected local outputs and metadata for 256 arrangements × four directions × two phases. Separate invariant evaluators count matter/materials and inspect stone positions. Full enumeration is **2,048 local cases**. The same artifact also receives 15 independent whole-engine fixture steps: five declared worlds × three ticks, including wrap and field seams. These fixture tests are not an induction proof of engine composition. No Bend/Lean checker, native compiler, GPU benchmark, or live model service runs in this browser application.
+
+The constitution always protects total matter; per-material counts and fixed stone positions are explicit optional promises. A change requires a reviewed requirement revision. Evidence binds source/revision, law/revision, checker, configuration, complete bounds, assumptions, exclusions and witnesses. Source/reference conformance and elected laws are distinct properties. Stop, refresh interruption, invalid work and exhausted budgets remain inconclusive; generation guards reject late completion after an edit or stop.
+
+Current and trial programs are replayed from the same frozen scene to the same selected step. Eighty steps is the comparison horizon, not the local checking domain. Captured encounters show an actual selected rule/output from an identified snapshot. Witnesses are labeled possible inputs, not claimed occurrences in today's drawing. Adoption retains the displayed trial world, comparison seed/step, source, law, report identity, and exact exported HTML plus its hash.
+
+Scene and brush edits are outside physics. They retain restorable snapshots and do not invalidate a local rule result that covers every supported input. Direction fields are executable configuration and do invalidate evidence. Starting another comparison from a trial is an explicit scene change; it does not adopt the proposed program. Stored kept worlds remain available.
+
+`groundwork.universe.v1` stores the workshop separately from lessons and archived starters. Restore validates shape, source, evidence hashes and decision-to-report relationships. Invalid originals are preserved for recovery. Editable project imports accept program settings, scene and promises only; they never import source, evidence or acceptance. Import confirmation exposes changed promises. Full-workspace backups are export-only. Local history is editable and unsigned.
+
 ## Beginner checks
 
 The badge rule operates on four fixed fictional people. Independent literal answers define the first-name and full-name outputs. Candidate source produces the badge text; the checker and live sample load exactly that identified source.
@@ -10,7 +28,7 @@ The shopping model has two bought flags, four states, mark-needed-item operation
 
 Beginner checks are synchronous because the domains are tiny. Results record snapshots, source/rule revisions, checker/reference/configuration identities, expected/actual cases, property outcomes, assumptions, exclusions, and completion. Historical currency is computed against current dependencies; a historical pass is not automatically current or accepted.
 
-## Starter projects
+## Archived starter projects (0.2)
 
 The four starter editors share a versioned workspace in `groundwork.starters.v1`. Each draft has a validated configuration and monotonically increasing revision. Checking creates a snapshot of its contract, source, exact standalone exports, configuration, assumptions, exclusions, outcome, and any failure witness. A keep decision references one completed, current passing result; exporting a draft does not create such a decision.
 

@@ -1,6 +1,6 @@
 {
   "name": "groundwork",
-  "version": "0.2.0-rc.1",
+  "version": "0.3.0-rc.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,8 +8,8 @@
     "build": "vite build && node scripts/prepare-sites-build.mjs && node scripts/prepare-auth-build.mjs",
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "test": "node --test tests/engine.test.mjs tests/lessons.test.mjs tests/auth.test.mjs tests/studio.test.mjs",
-    "test:ui": "vitest run tests/app.test.jsx tests/lessons-app.test.jsx tests/account.test.jsx tests/studio-app.test.jsx",
+    "test": "node --test tests/engine.test.mjs tests/lessons.test.mjs tests/auth.test.mjs tests/studio.test.mjs tests/universe.test.mjs tests/universe-export.test.mjs",
+    "test:ui": "vitest run tests/app.test.jsx tests/lessons-app.test.jsx tests/account.test.jsx tests/studio-app.test.jsx tests/universe-app.test.jsx",
     "check": "npm test && npm run test:ui && npm run build && npm run test:sites",
     "verify:release": "node scripts/verify-release.mjs"
   },

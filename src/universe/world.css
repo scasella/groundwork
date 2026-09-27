@@ -1,0 +1,26 @@
+.gw-world { margin: 0; min-width: 0; width: 100%; }
+.gw-world-frame { width: 100%; overflow: hidden; background: #0a1625; border: 1px solid #334350; border-radius: 12px; box-shadow: 0 12px 36px #020a1326; }
+.gw-world-frame:focus-within { outline: 3px solid #62d6c4; outline-offset: 3px; }
+.gw-world-canvas { display: block; width: 100%; height: auto; aspect-ratio: 1; image-rendering: pixelated; touch-action: none; cursor: crosshair; outline: none; }
+.gw-world-canvas.is-disabled { cursor: default; }
+.gw-world-caption { display: flex; align-items: baseline; justify-content: space-between; gap: 8px 16px; flex-wrap: wrap; margin-top: 10px; color: #a4b5bd; font-size: 11px; line-height: 1.5; font-variant-numeric: tabular-nums; }
+.gw-world-action { color: #d6e6e5; font-weight: 600; font-size: 12px; }
+.gw-world-key-help { margin: 6px 0 0; color: #91a5af; font-size: 10px; line-height: 1.6; }
+.gw-world-sr { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.gw-cell-patch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; width: 100%; min-width: 96px; max-width: 208px; }
+.gw-patch-cell { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; aspect-ratio: 1; min-width: 0; min-height: 44px; padding: 5px; border: 1px solid #7f929957; border-radius: 7px; background: var(--gw-cell-color); color: #fff; box-shadow: inset 0 1px #ffffff18; text-align: center; }
+button.gw-patch-cell { width: 100%; cursor: pointer; font: inherit; }
+button.gw-patch-cell:hover { outline: 2px solid #b9e5dc; outline-offset: 0; }
+button.gw-patch-cell:focus-visible { outline: 3px solid #62d6c4; outline-offset: 3px; z-index: 1; }
+.gw-patch-cell.is-selected { outline: 3px solid #f4f8ed; outline-offset: 1px; z-index: 1; }
+.gw-patch-cell.is-any { background-image: repeating-linear-gradient(135deg, transparent 0 8px, #ffffff0a 8px 10px); }
+.gw-cell-material { max-width: 100%; padding: 2px 5px; border-radius: 3px; background: #071421d9; color: #f1f6f5; font-size: 10px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.gw-cell-annotation { max-width: 100%; padding: 1px 4px; border-radius: 3px; background: #071421e8; color: #d0f3e6; font-size: 9px; line-height: 1.35; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .gw-world-frame { border-radius: 8px; }
+  .gw-world-caption { font-size: 10px; }
+  .gw-world-key-help { font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gw-world *, .gw-cell-patch * { animation: none !important; transition: none !important; }
+}

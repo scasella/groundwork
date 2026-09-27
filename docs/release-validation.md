@@ -1,3 +1,7 @@
+# Current universe-workshop update
+
+The 0.3.0-rc.1 replacement is documented in [universe validation](universe-validation.md). Earlier release records below remain historical.
+
 # Current starter-project update
 
 The 0.2.0-rc.1 four-project update passed 37 integrity/auth tests, 24 UI tests, the production build, and 4 Sites packaging tests. See [starter validation](starter-validation.md) for observed browser journeys, export checks, fixes, and remaining limits. The records below describe earlier release work.

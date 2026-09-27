@@ -1,0 +1,60 @@
+// @vitest-environment jsdom
+import React from 'react';
+import {test,expect,afterEach,beforeEach,vi} from 'vitest';
+import {render,screen,fireEvent,cleanup,within,waitFor,act} from '@testing-library/react';
+import {Universe} from '../src/universe/Universe.jsx';
+import {UNIVERSE_KEY,freshSession,loadSession} from '../src/universe/session.js';
+import * as engine from '../src/universe/engine.js';
+vi.mock('../src/universe/WorldCanvas.jsx',async()=>{
+ const actual=await vi.importActual('../src/universe/WorldCanvas.jsx');
+ return {...actual,WorldCanvas:({label,world,onCapture,onPaint,onFieldPaint})=><div aria-label={label}><span data-testid={`${label}-world`}>{JSON.stringify(world)}</span><button onClick={()=>onCapture?.(20,20)}>{label} capture</button><button onClick={()=>onPaint?.([100,101],2)}>{label} paint</button><button onClick={()=>onFieldPaint?.([0],2)}>{label} field</button></div>};
+});
+beforeEach(()=>{vi.stubGlobal('matchMedia',()=>({matches:true}));});
+afterEach(()=>{cleanup();localStorage.clear();vi.restoreAllMocks();vi.unstubAllGlobals();});
+const saved=(key=UNIVERSE_KEY)=>JSON.parse(localStorage.getItem(key));
+const click=name=>fireEvent.click(screen.getByRole('button',{name}));
+async function check(){click('Check my rules');await waitFor(()=>expect(screen.queryByRole('button',{name:'Stop check'})).toBeNull(),{timeout:10000});}
+function rule(){click('Make my first rule');}
+function swapUp(){const patch=within(screen.getByRole('group',{name:'After: choose two cells to swap'}));fireEvent.click(patch.getByRole('button',{name:/Top left:/}));fireEvent.click(patch.getByRole('button',{name:/Bottom left:/}));}
+function advanced(){click(/Match, copy, transform & mirror/);}
+test('initial world is singular; author edits actual rule, preserves wildcard symbols, adds interacting rules and paints field',()=>{
+ render(<Universe/>);expect(screen.getByLabelText('Current world')).toBeTruthy();expect(screen.queryByLabelText('Trial world')).toBeNull();rule();expect(saved().draft.program.rules[0].match).toEqual([0,-1,2,-1]);expect(screen.getByRole('button',{name:/Top right: Any material/})).toBeTruthy();swapUp();expect(saved().draft.program.rules[0].output).toEqual([2,1,0,3]);expect(screen.getByLabelText('Trial world')).toBeTruthy();advanced();fireEvent.change(screen.getByLabelText('Before bottom right'),{target:{value:'1'}});fireEvent.change(screen.getByLabelText('After bottom right'),{target:{value:'6'}});expect(saved().draft.program.rules[0].output[3]).toBe(6);click('+ Add another rule');expect(saved().draft.program.rules).toHaveLength(2);click('Trial world field');expect(saved().draft.program.field[0]).toBe(2);
+});
+test('real pass, explicit adoption, exact export snapshot, edits stale evidence, and refresh retains distinct history',async()=>{
+ const view=render(<Universe/>);rule();swapUp();await check();expect(saved().reports.at(-1).outcome).toBe('pass');expect(screen.getByRole('button',{name:'Use this version'}).disabled).toBe(true);fireEvent.click(screen.getByRole('checkbox',{name:/I tried this version/}));fireEvent.change(screen.getByLabelText('Comparison step'),{target:{value:'9'}});const shown=JSON.parse(screen.getByTestId('Trial world-world').textContent);click('Use this version');const adopted=saved();expect(adopted.decisions).toHaveLength(1);expect(adopted.decisions[0].comparisonStep).toBe(9);expect(adopted.current.world).toEqual(shown);expect(adopted.decisions[0].html).toContain(adopted.draft.source);fireEvent.change(screen.getByLabelText('Rule name'),{target:{value:'Different name'}});expect(screen.getByText(/historical — no longer current/)).toBeTruthy();expect(screen.getByRole('button',{name:'Use this version'}).disabled).toBe(true);view.unmount();render(<Universe/>);expect(saved().decisions).toHaveLength(1);expect(saved().reports).toHaveLength(1);expect(saved().draft.program.rules[0].name).toBe('Different name');expect(screen.queryByText(/could not be restored/)).toBeNull();
+});
+test('failing alchemy remains draft; witness replay, reviewed promise revision, and rerun produce independently computed result',async()=>{
+ render(<Universe/>);rule();advanced();fireEvent.change(screen.getByLabelText('Before top left'),{target:{value:'1'}});fireEvent.change(screen.getByLabelText('Before bottom left'),{target:{value:'-1'}});fireEvent.change(screen.getByLabelText('After top left'),{target:{value:'6'}});await check();expect(saved().reports.at(-1).outcome).toBe('fail');expect(saved().current.artifact.program.rules).toHaveLength(0);click('Replay witness 1');expect(screen.getByText(/same output was reproduced/)).toBeTruthy();click('Review my promises');fireEvent.click(within(screen.getByRole('dialog')).getByRole('checkbox',{name:'Keep the amount of each material'}));expect(saved().law.species).toBe(true);click('Approve changed promises');expect(saved().law.species).toBe(false);expect(saved().reports[0].outcome).toBe('fail');expect(screen.getByRole('button',{name:'Use this version'}).disabled).toBe(true);await check();expect(saved().reports.at(-1).outcome).toBe('pass');expect(saved().reports).toHaveLength(2);expect(saved().decisions).toHaveLength(0);
+});
+test('Stop is inconclusive and late success cannot replace it or permit adoption',async()=>{
+ const real=engine.checkArtifact;let resolve;vi.spyOn(engine,'checkArtifact').mockImplementation(()=>new Promise(r=>{resolve=r;}));render(<Universe/>);click('Check my rules');click('Stop check');expect(saved().reports.at(-1).outcome).toBe('inconclusive');const result=await real(saved().draft,saved().law);await act(async()=>resolve(result));expect(saved().reports).toHaveLength(1);expect(screen.getByRole('button',{name:'Use this version'}).disabled).toBe(true);
+});
+test('program edit during check interrupts it; a delayed report cannot overwrite new draft evidence',async()=>{
+ let resolve;vi.spyOn(engine,'checkArtifact').mockImplementation(()=>new Promise(r=>{resolve=r;}));render(<Universe/>);click('Check my rules');rule();const before=saved();await act(async()=>resolve({outcome:'pass'}));expect(saved().reports.at(-1).outcome).toBe('inconclusive');expect(saved().draft.id).toBe(before.draft.id);expect(screen.getByRole('button',{name:'Use this version'}).disabled).toBe(true);
+});
+test('refresh interruption, malformed reports, and unavailable storage do not falsely restore evidence',()=>{
+ const s=freshSession();s.running={checked:64,total:2048};localStorage.setItem(UNIVERSE_KEY,JSON.stringify(s));let view=render(<Universe/>);expect(saved().reports.at(-1).outcome).toBe('inconclusive');expect(screen.getAllByText(/Check interrupted by refresh/).length).toBeGreaterThan(0);view.unmount();const broken={...freshSession(),reports:[{id:'x',outcome:'pass',message:{bad:true},properties:[],witnesses:[]}]};localStorage.setItem(UNIVERSE_KEY,JSON.stringify(broken));view=render(<Universe/>);expect(screen.getByText(/Saved workshop could not be restored/)).toBeTruthy();expect(localStorage.getItem(UNIVERSE_KEY)).toBe(JSON.stringify(broken));view.unmount();const blocked={getItem(){throw Error('Blocked');}};expect(loadSession(UNIVERSE_KEY,blocked).recovery.message).toBe('Blocked');
+});
+test('separate storage keys remount account state; trial brush keeps the displayed trial as shared seed',()=>{
+ const view=render(<Universe storageKey="account-a"/>);rule();swapUp();fireEvent.change(screen.getByLabelText('Comparison step'),{target:{value:'8'}});const expected=JSON.parse(screen.getByTestId('Trial world-world').textContent);expected[100]=2;expected[101]=2;click('Trial world paint');expect(saved('account-a').seed).toEqual(expected);expect(saved('account-a').step).toBe(0);view.rerender(<Universe storageKey="account-b"/>);expect(saved('account-b').draft.program.rules).toHaveLength(0);expect(saved('account-a').draft.program.rules).toHaveLength(1);
+});
+test('dialogs trap focus, escape to opener, and reset is deliberate',()=>{
+ render(<Universe/>);const opener=screen.getByRole('button',{name:'Review my promises'});opener.focus();fireEvent.click(opener);expect(screen.getByRole('dialog')).toBe(document.activeElement);const cancel=screen.getByRole('button',{name:'Cancel'});cancel.focus();fireEvent.keyDown(document,{key:'Tab'});expect(document.activeElement).toBe(within(screen.getByRole('dialog')).getAllByRole('checkbox')[0]);fireEvent.keyDown(document,{key:'Escape'});expect(screen.queryByRole('dialog')).toBeNull();expect(document.activeElement).toBe(opener);rule();click('Reset workshop…');click('Cancel');expect(saved().draft.program.rules).toHaveLength(1);
+});
+test('import reviews changed promises, imports no approval, and produces actual downloadable files',async()=>{
+ const blobs=[];vi.stubGlobal('URL',class extends URL{static createObjectURL(blob){blobs.push(blob);return 'blob:universe';}static revokeObjectURL(){}});vi.spyOn(HTMLAnchorElement.prototype,'click').mockImplementation(()=>{});
+ render(<Universe/>);const p=freshSession();const input={format:'groundwork-universe/1',program:p.draft.program,world:p.seed,law:{matter:true,species:false,stone:true}};
+ fireEvent.change(screen.getByLabelText('Import a project'),{target:{files:[{size:20000,text:async()=>JSON.stringify(input)}]}});await screen.findByRole('dialog');expect(saved().law.species).toBe(true);click('Approve import as draft');expect(saved().law.species).toBe(false);expect(saved().reports).toHaveLength(0);expect(saved().decisions).toHaveLength(0);click('Download runnable draft');click('Download editable project');expect(blobs.map(b=>b.type)).toEqual(['text/html','application/json']);expect(saved().decisions).toHaveLength(0);
+});
+test('unbacked adoption records and mutated historical HTML are quarantined without destroying original storage',async()=>{
+ const s=freshSession(),r=await engine.checkArtifact(s.draft,s.law);s.reports=[r];s.current.origin='human';s.decisions=[{artifact:s.draft,world:s.seed,law:s.law,lawRevision:-1,reportId:'missing',html:'changed',at:new Date().toISOString()}];const raw=JSON.stringify(s);localStorage.setItem(UNIVERSE_KEY,raw);render(<Universe/>);expect(screen.getByText(/Saved workshop could not be restored/)).toBeTruthy();expect(localStorage.getItem(UNIVERSE_KEY)).toBe(raw);expect(screen.getByRole('button',{name:'Use this version'}).disabled).toBe(true);
+});
+test('manual world edit preserves reconstructible pre-edit draft snapshot',()=>{
+ render(<Universe/>);rule();swapUp();fireEvent.change(screen.getByLabelText('Comparison step'),{target:{value:'7'}});const before=saved();click('Trial world paint');const after=saved(),checkpoint=after.history.findLast(h=>h.label==='Before manual world edit');expect(checkpoint.artifact.id).toBe(before.draft.id);expect(checkpoint.world).toEqual(before.seed);expect(checkpoint.step).toBe(7);expect(after.history.at(-1).indices).toEqual([100,101]);
+});
+test('write failure stays explicit and browser getter failure is caught inside recovery',()=>{
+ const real=window.localStorage;const getter=vi.spyOn(window,'localStorage','get').mockImplementation(()=>{throw Error('storage denied');});expect(loadSession(UNIVERSE_KEY).recovery.message).toBe('storage denied');getter.mockRestore();vi.spyOn(Storage.prototype,'setItem').mockImplementation(()=>{throw Error('quota');});render(<Universe/>);expect(screen.getByText(/This workshop is not saved/)).toBeTruthy();expect(screen.queryByText('Saved in this browser · device-local')).toBeNull();expect(real.getItem(UNIVERSE_KEY)).toBeNull();
+});
+test('direction painting opens a stable trial before the first stroke and scenes retain physics and prior drawings',()=>{
+ render(<Universe/>);expect(screen.queryByLabelText('Trial world')).toBeNull();click('Direction');expect(screen.getByLabelText('Trial world')).toBeTruthy();click('Trial world field');const prior=saved();expect(prior.draft.program.field[0]).toBe(2);fireEvent.change(screen.getByLabelText('New scene'),{target:{value:'empty'}});expect(saved().seed).toEqual(prior.seed);click('Replace drawing, keep rules');expect(saved().seed.every(c=>c===0)).toBe(true);expect(saved().draft.id).toBe(prior.draft.id);expect(saved().history.at(-1).world).toEqual(prior.seed);
+});
