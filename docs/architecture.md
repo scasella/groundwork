@@ -23,3 +23,9 @@ Repairs, changes of intent, and acceptance events remain separate. Acceptance is
 ## Limits
 
 The checks are not theorem-kernel proofs or universal JavaScript verification. They trust the runtime, prepared generator, reference specification and checker. They do not prove the UI renders correctly or that the user chose the right requirement. Browser UAT and automated UI tests are separate evidence. Simulated persona reviews are not human usability studies.
+
+## Optional Sites identity
+
+The platform handles `/signin-with-chatgpt` and `/signout-with-chatgpt`. A small Worker wrapper exposes `/api/session` only as a same-origin, non-cacheable identity read. It trusts the platform’s forwarded ID/email headers only when explicitly enabled for Sites; it returns an opaque ID without email or name. No application auth database or token exchange is implemented.
+
+The frontend resolves identity before mounting a lesson and selects a per-account localStorage namespace. Network/identity errors do not silently open another workspace. Static/dev servers without the endpoint run as guests. Sign-in does not synchronize lesson records or authenticate their exported history.

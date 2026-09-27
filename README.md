@@ -22,6 +22,8 @@ The prepared faulty formatter reads the wrong field. The checker compares its re
 
 Use **Apply prepared repair & check** to replace the program while keeping the same rule. Try another fictional person after the check passes. The sample runs the same stored module that was checked.
 
+![Repaired badge and live example after a passing check](docs/images/badge-repaired.png)
+
 ### 3. Change your mind without calling correct code a bug
 
 The optional second lesson compares first-name and full-name badges for two people named Maya. Review the old and proposed output together. **Keep my rule** is a valid decision; choosing a new rule requires a new check.
@@ -89,6 +91,14 @@ No API key, AI subscription, or database is needed. Fonts are bundled through np
 The sample and checker execute the same stored JavaScript artifact. Expected answers are evaluated separately. Results identify their rule, source, checking conditions, and scope. Earlier results stay inspectable and may become stale.
 
 These are genuine computed checks using **prepared templates and repairs**. There is no live AI agent, arbitrary code import, independent proof kernel, or production-readiness guarantee. The runtime, generator, checker, and reference rules/tables are trusted. Data checks do not establish rendering, accessibility, concurrency, hardware timing, or correctness outside the declared domain. See [architecture and trust boundaries](docs/architecture.md).
+
+## ChatGPT sign-in on Sites
+
+The hosted Sites edition supports optional **Sign in with ChatGPT**, using the platform’s own sign-in and sign-out routes. No password, API key, or app-owned OAuth token is stored by Groundwork. The app does not receive your ChatGPT conversations.
+
+Signing in opens separate lesson progress **on this browser**. Guest progress remains available after signing out. Progress is not synced across devices, and local history remains editable and unsigned. On standalone static hosting or local Vite preview, the account option is unavailable and the app works as a guest.
+
+For a Sites deployment, set the non-secret runtime variable `GROUNDWORK_CHATGPT_AUTH=enabled`. Enable it only behind the Sites dispatcher, which supplies the authenticated-user headers. The included optional Worker endpoint must not trust client-supplied identity headers on a generic hosting platform.
 
 ## Your data
 

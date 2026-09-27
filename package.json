@@ -5,11 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prepare-sites-build.mjs",
+    "build": "vite build && node scripts/prepare-sites-build.mjs && node scripts/prepare-auth-build.mjs",
     "preview": "vite preview",
     "test:sites": "node --test tests/sites-worker.test.mjs",
-    "test": "node --test tests/engine.test.mjs tests/lessons.test.mjs",
-    "test:ui": "vitest run tests/app.test.jsx tests/lessons-app.test.jsx",
+    "test": "node --test tests/engine.test.mjs tests/lessons.test.mjs tests/auth.test.mjs",
+    "test:ui": "vitest run tests/app.test.jsx tests/lessons-app.test.jsx tests/account.test.jsx",
     "check": "npm test && npm run test:ui && npm run build && npm run test:sites",
     "verify:release": "node scripts/verify-release.mjs"
   },

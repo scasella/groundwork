@@ -8,17 +8,17 @@ const title=kind=>kind==='badge'?'Name badge':'Shopping list';
 const policyLabel=policy=>({first:'First name only',full:'Full name',hide:'Hide bought items',all:'Show bought items too'}[policy]);
 const short=id=>id.slice(0,10);
 function download(name,text,type='application/json'){const url=URL.createObjectURL(new Blob([text],{type}));const a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
-function load(){let raw=null;try{raw=localStorage.getItem(LESSON_KEY);return {data:raw?restoreLessons(raw):newLessons()};}catch(error){return {data:newLessons(),recovery:{raw,message:error.message}};}}
+function load(storageKey=LESSON_KEY){let raw=null;try{raw=localStorage.getItem(storageKey);return {data:raw?restoreLessons(raw):newLessons()};}catch(error){return {data:newLessons(),recovery:{raw,message:error.message}};}}
 function Badge({text,label}){return <div className="lesson-badge" aria-label={label}><span>HELLO, MY NAME IS</span><strong>{text}</strong><small>A fictional example badge</small></div>;}
 function ListView({result,onBuy}){return <div className="lesson-list"><ul>{result.rows.map(row=><li key={row.id}><div><strong>{row.name}</strong><small>{row.bought?'Bought':'Still needed'}</small></div>{!row.bought&&onBuy&&<button className="btn secondary" onClick={event=>{if(event.detail<=1)onBuy(row.id);}}>Mark {row.name} bought</button>}{row.bought&&<CheckCircle size={20}/>}</li>)}</ul>{!result.rows.length&&<p className="lesson-empty">No items visible</p>}{!!result.receipt.length&&<p className="lesson-receipt">Bought: {result.receipt.join(', ')}. Hidden items stay on the list.</p>}</div>;}
 function Output({kind,value,label}){return kind==='badge'?<Badge text={value.text} label={label}/>:<ListView result={value}/>;}
 function Comparison({kind,expected,actual}){return <div className="lesson-comparison"><section><h3>Your rule asks for</h3><Output kind={kind} value={expected} label="Expected badge"/></section><section><h3>This version made</h3><Output kind={kind} value={actual} label="Actual badge"/></section></div>;}
-export function Lessons(){
-  const [loaded]=useState(load),[data,setData]=useState(loaded.data),[recovery,setRecovery]=useState(loaded.recovery),[saved,setSaved]=useState(false),[reset,setReset]=useState(false),[notice,setNotice]=useState('');
+export function Lessons({storageKey=LESSON_KEY,accountControls}={}){
+  const [loaded]=useState(()=>load(storageKey)),[data,setData]=useState(loaded.data),[recovery,setRecovery]=useState(loaded.recovery),[saved,setSaved]=useState(false),[reset,setReset]=useState(false),[notice,setNotice]=useState('');
   const current=useRef(data);current.current=data;
   const s=data.lessons[data.selected],e=lessonResult(s),accepted=lessonAcceptance(s),passed=lessonCanAccept(s),witness=e?.cases.find(c=>c.outcome==='failed'),stale=!!e&&lessonCurrency(e,s.rule,s.artifact)!=='current';
   const main=useRef(null);
-  useEffect(()=>{if(recovery){setSaved(false);return;}try{localStorage.setItem(LESSON_KEY,JSON.stringify(data));setSaved(true);}catch{setSaved(false);}},[data,recovery]);
+  useEffect(()=>{if(recovery){setSaved(false);return;}try{localStorage.setItem(storageKey,JSON.stringify(data));setSaved(true);}catch{setSaved(false);}},[data,recovery,storageKey]);
   function update(fn){try{const old=current.current,next={...old,lessons:{...old.lessons,[old.selected]:fn(old.lessons[old.selected])}};current.current=next;setData(next);setNotice('');}catch(error){setNotice(error.message);}}
   function select(kind){const next={...current.current,selected:kind};current.current=next;setData(next);setNotice('');window.scrollTo(0,0);}
   function advance(fn){update(fn);window.scrollTo(0,0);main.current?.focus({preventScroll:true});}
@@ -26,7 +26,7 @@ export function Lessons(){
   const sample=s.artifact?lessonExecutable(s.artifact)(s.kind==='badge'?PEOPLE[s.sample]:s.sample,s.kind==='shopping'?'view':undefined):null;
   const lessonNumber=s.kind==='badge'?'01':'02';
   return <div className="beginner-app">
-    <header className="lesson-topbar"><button className="lesson-brand" onClick={()=>select('badge')} aria-label="Groundwork beginner lessons"><Stack size={27}/><strong>Groundwork</strong><span>LEARN BY DOING</span></button><details className="lesson-more"><summary>More examples</summary><a href="?example=audio">Audio queue · advanced example</a><p>Your existing audio project and history are preserved.</p></details></header>
+    <header className="lesson-topbar"><button className="lesson-brand" onClick={()=>select('badge')} aria-label="Groundwork beginner lessons"><Stack size={27}/><strong>Groundwork</strong><span>LEARN BY DOING</span></button><div className="lesson-topbar-actions">{accountControls}<details className="lesson-more"><summary>More examples</summary><a href="?example=audio">Audio queue · advanced example</a><p>Your existing audio project and history are preserved.</p></details></div></header>
     <main className="lesson-main" ref={main} tabIndex={-1}>
       <nav className="lesson-path" aria-label="Beginner examples"><button onClick={()=>select('badge')} aria-current={s.kind==='badge'?'step':undefined}><span>1</span>Name badge</button><ArrowRight size={16}/><button onClick={()=>select('shopping')} aria-current={s.kind==='shopping'?'step':undefined}><span>2</span>Shopping list</button></nav>
       {(!saved||recovery)&&<div className="notice amber" role="alert"><div><strong>{recovery?'Saved lessons could not be restored. The original has not been overwritten.':'Lessons are not saved. Export before closing.'}</strong><button className="text-btn" onClick={exportAll}>Export current lessons</button>{recovery&&<><button className="text-btn" onClick={()=>download('groundwork-unrestored-lessons.txt',recovery.raw||recovery.message,'text/plain')}>Download original data</button><button className="text-btn" onClick={()=>setReset(true)}>Review reset options</button></>}</div></div>}

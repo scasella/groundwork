@@ -8,17 +8,17 @@ On macOS Apple Silicon with Node 24.21.0, including a fresh `npm ci` and the ful
 
 | Gate | Observed result |
 | --- | --- |
-| `npm test` | 24 integrity tests passed |
-| `npm run test:ui` | 12 interaction tests passed |
+| `npm test` | 26 integrity tests passed |
+| `npm run test:ui` | 14 interaction tests passed |
 | `npm run build` | Passed |
 | `npm run test:sites` | 4 tests passed, including required build artifacts |
 | `npm audit` after compatible fixes | 0 reported vulnerabilities at the time checked |
 
 The audit originally reported five vulnerable packages. Vite was patched from 6.4.2 to 6.4.3 and compatible transitive fixes were applied. See the [Vite advisory](https://github.com/advisories/GHSA-v6wh-96g9-6wx3). Audit results are time-dependent and do not prove absence of vulnerabilities.
 
-The candidate content scan passed for 38 staged/tracked files; its allowlisted copy removes local-only histories, machine paths, and hosting identity.
+The initial licensed candidate content scan passed for 38 staged/tracked files; its allowlisted copy removes local-only histories, machine paths, and hosting identity.
 
-The pinned CI workflow targets Node 22.22.2, 24.21.0, and 26.8.1 on GitHub-hosted Linux. That is intended CI coverage, not a claim that GitHub Actions has already run. Local verification does not establish Windows, Linux, every browser, or every engine-version combination.
+The pinned CI workflow targets Node 22.22.2, 24.21.0, and 26.8.1 on GitHub-hosted Linux. The initial README/CI-fix commit passed that hosted matrix; later changes require their own run. The account integration has local unit and interaction coverage, with the live OAuth redirect owned by Sites. Local verification does not establish Windows, Linux, every browser, or every engine-version combination.
 
 ## Adversarial review and simulated-persona UAT
 

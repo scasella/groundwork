@@ -12,7 +12,9 @@ Storage is shape-validated before rendering and malformed originals are preserve
 
 ## Privacy
 
-There is no backend, account system, analytics, application telemetry, or application-level network API. The app serves locally bundled assets and stores progress in localStorage. Exports can include notes entered in the advanced example and full history: inspect them before sharing. Clear or restart the relevant example on shared machines when appropriate.
+There is no lesson-data backend, analytics, or application telemetry. An optional `/api/session` endpoint reads identity supplied by the Sites dispatcher; it is disabled unless `GROUNDWORK_CHATGPT_AUTH=enabled`. The browser calls it before choosing a local workspace. Sites owns the ChatGPT sign-in/sign-out routes and cookies; Groundwork does not implement passwords, OAuth callbacks, or store authentication tokens. Enable this integration only behind Sites, never behind a proxy that accepts spoofed identity headers. Account responses are private and non-cacheable.
+
+The app serves locally bundled assets and stores progress in localStorage, partitioned by the Site-scoped account identifier when signed in. This prevents accidental mixing in the UI; it is not encrypted or server-backed account isolation. Signing out returns to guest progress. No cross-device synchronization is provided. Exports can include notes entered in the advanced example and full history: inspect them before sharing. Clear or restart the relevant example on shared machines when appropriate.
 
 ## Deployment and reports
 
