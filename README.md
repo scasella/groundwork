@@ -6,6 +6,10 @@ Choose what a program should do, see it get something wrong, and apply a prepare
 
 This is an early educational preview, not a general-purpose verifier or AI coding service.
 
+**[Try Groundwork live](https://groundwork-queue-lab.scasella91.chatgpt.site)** · [Source](https://github.com/scasella/groundwork) · [CI checks](https://github.com/scasella/groundwork/actions/workflows/ci.yml)
+
+Use it as a guest, or open **Sign in with ChatGPT** for a separate local workspace.
+
 ## Critical paths, in pictures
 
 ### 1. Choose a rule you can see

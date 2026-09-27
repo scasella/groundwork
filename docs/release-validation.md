@@ -41,3 +41,9 @@ These reviews are bounded adversarial checks. They do not establish human compre
 The application trusts JavaScript, its prepared templates, the reference data/rules, and the checker. Browser-local history is editable. Exact-template restrictions may require recovery/export after incompatible future template changes. The public candidate excludes private review records, local exported sessions, absolute machine paths, and the original hosting project identifier.
 
 The maintainer approved publication under the MIT license. The local evidence above does not itself establish remote CI success; consult the repository’s Actions page for current runs. Publishing this source does not deploy a hosted application.
+
+## Publication and hosting
+
+The MIT-licensed repository and illustrated README are public. The [live Site](https://groundwork-queue-lab.scasella91.chatgpt.site) was deployed successfully through Sites with its existing public audience and native ChatGPT sign-in integration enabled. Local account tests cover header handling, separate guest/account keys, safe return paths, account-switch revalidation, and failure behavior. No manual end-to-end OAuth login or account-security penetration test is claimed.
+
+The hosted Node 22/24/26 CI matrix passed for the account-revalidation implementation. See the repository Actions page for the current main/release status.
